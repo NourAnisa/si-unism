@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem SKKM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8">Sistem Penghitungan SKKM</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Rata-rata Poin SKKM per Tahun</h2>
+                <canvas id="avgChart"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Total Poin SKKM per Tahun</h2>
+                <canvas id="sumChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="flex justify-center space-x-4">
+            <a href="/auth/login?role=mahasiswa" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
+                Login Mahasiswa
+            </a>
+            <a href="/auth/login?role=dosen" 
+               class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg">
+                Login Dosen
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Grafik rata-rata
+        const avgCtx = document.getElementById('avgChart').getContext('2d');
+        const avgChart = new Chart(avgCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ avg_points|map(attribute='tahun_ajaran')|list|tojson }},
+                datasets: [{
+                    label: 'Rata-rata Poin',
+                    data: {{ avg_points|map(attribute='rata_poin')|list|tojson }},
+                    backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Grafik total
+        const sumCtx = document.getElementById('sumChart').getContext('2d');
+        const sumChart = new Chart(sumCtx, {
+            type: 'line',
+            data: {
+                labels: {{ sum_points|map(attribute='tahun_ajaran')|list|tojson }},
+                datasets: [{
+                    label: 'Total Poin',
+                    data: {{ sum_points|map(attribute='total_poin')|list|tojson }},
+                    backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
