@@ -47,3 +47,5 @@ from .views.dosen import router as dosen_router
 app.include_router(auth_router, prefix="/auth")
 app.include_router(mahasiswa_router, prefix="/mahasiswa")
 app.include_router(dosen_router, prefix="/dosen")
+from .test_connection import router as test_router
+app.include_router(test_router, prefix="/diagnostic")
